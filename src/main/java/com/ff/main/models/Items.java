@@ -76,5 +76,11 @@ public class Items implements Comparable<Items> {
 		return 0;
 	}
 	
+	@Override
+	public String toString() {
+		String result = "";
+		result += this.itemName + " Veg: " + this.vegetarian + " $" + this.getItemPrice();
+		return result;
+	}
 	
 }

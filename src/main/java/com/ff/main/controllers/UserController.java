@@ -3,6 +3,8 @@ package com.ff.main.controllers;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ff.main.beans.Cart;
 import com.ff.main.models.Hours;
 import com.ff.main.models.Items;
 import com.ff.main.models.Provider;
@@ -39,6 +42,9 @@ public class UserController {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private JavaMailSender javaMailSender;
+	
 	@PostMapping("/register/users")
 	public Users addUser(@RequestBody Users u) {
 		u.setUserPassword(passwordEncoder.encode(u.getUserPassword()));
@@ -64,5 +70,22 @@ public class UserController {
 	@GetMapping("/users/providers/hours/{id}")
 	public Set<Hours> getHours(@PathVariable Long id){
 		return hs.getByProvider(id);
+	}
+	
+	
+	@PostMapping("/users/cart")
+	public void submitCart(@RequestBody Cart c) {
+		c.setProvider(c.getItems().get("0").getProvider());
+		sendEmail(c);
+	}
+	
+	public void sendEmail(Cart c) {
+		SimpleMailMessage msg = new SimpleMailMessage();
+		msg.setTo(c.getProvider().getProviderEmail(), c.getUser().getUserEmail());
+		msg.setFrom("ahmeda90210@gmail.com");
+		msg.setSubject("Order from "+c.getProvider().getProviderName());
+		msg.setText(c.toString());
+		
+		javaMailSender.send(msg);
 	}
 }
