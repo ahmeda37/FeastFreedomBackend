@@ -70,7 +70,8 @@ public class ProviderController {
 		try {
 			String end = "."+imgInput.getContentType().substring(imgInput.getContentType().indexOf("/")+1);
 			byte[] bytes = imgInput.getBytes();
-			Path path = Paths.get("D:/Abdurahman/Summit/Project3/feastfreedom-server/FeastFreedom/src/main/resources/static/"+p.getProviderId()+end);
+			//Path path = Paths.get("D:/Abdurahman/Summit/Project3/feastfreedom-server/FeastFreedom/src/main/resources/static/"+p.getProviderId()+end);
+			Path path = Paths.get("/home/tomcat/static/" + p.getProviderId() + end);
 			System.out.println(path.toString());
 			Files.write(path, bytes);
 			p.setProviderImg(p.getProviderId()+end);
